@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>India vs Pakistan — Live Player</title>
+
+  <!-- HLS.js -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#071126;
+      --card:#081827;
+      --muted:#8fb0c9;
+      --accent:#00d1ff;
+      --accent-2:#00ffa6;
+    }
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background:linear-gradient(180deg,var(--bg),#02101a);
+      color:#fff;
+    }
+    .app{
+      max-width:1200px;
+      margin:20px auto;
+      padding:20px;
+    }
+    .player-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:15px;
+      box-shadow:0 6px 30px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .video-wrap{
+      position:relative;
+      border-radius:10px;
+      overflow:hidden;
+      background:#000;
+    }
+    video{
+      width:100%;
+      height:auto;
+      display:block;
+      background:#000;
+    }
+    .controls-row{
+      display:flex;
+      justify-content:space-between;
+      margin-top:12px;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    select{
+      padding:8px 10px;
+      border-radius:6px;
+      border:none;
+      cursor:pointer;
+      background:#222;
+      color:#fff;
+    }
+    /* Recommendations */
+    .reco{
+      margin-top:25px;
+    }
+    .reco h3{margin:0 0 12px;font-size:20px;}
+    .reco-list{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:15px;
+    }
+    .reco-card{
+      background:var(--card);
+      border-radius:10px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.05);
+      transition:transform 0.2s;
+      cursor:pointer;
+    }
+    .reco-card:hover{transform:scale(1.03);}
+    .reco-card img{
+      width:100%;
+      display:block;
+    }
+    .reco-card .title{
+      padding:10px;
+      font-weight:bold;
+      font-size:15px;
+    }
+    .footer{
+      text-align:center;
+      margin-top:20px;
+      font-size:14px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Player -->
+    <div class="player-card">
+      <h2>India vs Pakistan</h2>
+      <div class="video-wrap">
+        <video id="video" poster="https://i.ibb.co/TM7kG9p4/x.jpg" controls playsinline></video>
+      </div>
+      <div class="controls-row">
+        <label>
+          Language:
+          <select id="langSelect">
+            <option value="en" selected>English</option>
+            <option value="hi">Hindi</option>
+          </select>
+        </label>
+        <label>
+          Quality:
+          <select id="qualitySelect">
+            <option value="1080">1080p</option>
+            <option value="720">720p</option>
+            <option value="360">360p</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="reco">
+      <h3>Recommended Streams</h3>
+      <div class="reco-list">
+        <div class="reco-card" onclick="playStream('en','1080')">
+          <img src="https://i.ibb.co/TM7kG9p4/x.jpg" alt="Poster">
+          <div class="title">India vs Pakistan — English 1080p</div>
+        </div>
+        <div class="reco-card" onclick="playStream('en','720')">
+          <img src="https://i.ibb.co/TM7kG9p4/x.jpg" alt="Poster">
+          <div class="title">India vs Pakistan — English 720p</div>
+        </div>
+        <div class="reco-card" onclick="playStream('en','360')">
+          <img src="https://i.ibb.co/TM7kG9p4/x.jpg" alt="Poster">
+          <div class="title">India vs Pakistan — English 360p</div>
+        </div>
+        <div class="reco-card" onclick="playStream('hi','1080')">
+          <img src="https://i.ibb.co/TM7kG9p4/x.jpg" alt="Poster">
+          <div class="title">India vs Pakistan — Hindi 1080p</div>
+        </div>
+        <div class="reco-card" onclick="playStream('hi','720')">
+          <img src="https://i.ibb.co/TM7kG9p4/x.jpg" alt="Poster">
+          <div class="title">India vs Pakistan — Hindi 720p</div>
+        </div>
+        <div class="reco-card" onclick="playStream('hi','360')">
+          <img src="https://i.ibb.co/TM7kG9p4/x.jpg" alt="Poster">
+          <div class="title">India vs Pakistan — Hindi 360p</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">~ Banty Yadav</div>
+  </div>
+
+  <script>
+    const streams = {
+      en: {
+        "360": "https://tataplay.slivcdn.com/hls/live/2011747-b/TEN1HD/hdntl=exp=1757505691~acl=%2f*~id=81516335-f3df-4265-bf99-e76c7b3acf54~data=hdntl~hmac=59dbbd284ef71a4c4bc8fdd708e96929c8c95e1bebecf2ed44bdf4aeb988cae4/master_664.m3u8",
+        "720": "https://tataplay.slivcdn.com/hls/live/2011747-b/TEN1HD/hdntl=exp=1757505691~acl=%2f*~id=81516335-f3df-4265-bf99-e76c7b3acf54~data=hdntl~hmac=59dbbd284ef71a4c4bc8fdd708e96929c8c95e1bebecf2ed44bdf4aeb988cae4/master_1300.m3u8",
+        "1080":"https://tataplay.slivcdn.com/hls/live/2011747-b/TEN1HD/hdntl=exp=1757505691~acl=%2f*~id=81516335-f3df-4265-bf99-e76c7b3acf54~data=hdntl~hmac=59dbbd284ef71a4c4bc8fdd708e96929c8c95e1bebecf2ed44bdf4aeb988cae4/master_3500.m3u8"
+      },
+      hi: {
+        "360": "https://tataplay.slivcdn.com/hls/live/2020591-b/TEN3HD/hdntl=exp=1757505691~acl=%2f*~id=81516335-f3df-4265-bf99-e76c7b3acf54~data=hdntl~hmac=59dbbd284ef71a4c4bc8fdd708e96929c8c95e1bebecf2ed44bdf4aeb988cae4/master_664.m3u8",
+        "720": "https://tataplay.slivcdn.com/hls/live/2020591-b/TEN3HD/hdntl=exp=1757505691~acl=%2f*~id=81516335-f3df-4265-bf99-e76c7b3acf54~data=hdntl~hmac=59dbbd284ef71a4c4bc8fdd708e96929c8c95e1bebecf2ed44bdf4aeb988cae4/master_1300.m3u8",
+        "1080":"https://tataplay.slivcdn.com/hls/live/2020591-b/TEN3HD/hdntl=exp=1757505691~acl=%2f*~id=81516335-f3df-4265-bf99-e76c7b3acf54~data=hdntl~hmac=59dbbd284ef71a4c4bc8fdd708e96929c8c95e1bebecf2ed44bdf4aeb988cae4/master_3500.m3u8"
+      }
+    };
+
+    const video = document.getElementById('video');
+    const langSelect = document.getElementById('langSelect');
+    const qualitySelect = document.getElementById('qualitySelect');
+    let currentLang = 'en';
+    let currentQuality = '1080';
+
+    function loadStream(lang, quality){
+      const url = streams[lang][quality];
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+      } else if (Hls.isSupported()) {
+        if (window._hls) { window._hls.destroy(); }
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        window._hls = hls;
+      } else {
+        video.src = url;
+      }
+    }
+
+    function playStream(lang, quality){
+      currentLang = lang;
+      currentQuality = quality;
+      langSelect.value = lang;
+      qualitySelect.value = quality;
+      loadStream(lang, quality);
+    }
+
+    langSelect.addEventListener('change', e=>{
+      currentLang = e.target.value;
+      loadStream(currentLang, currentQuality);
+    });
+    qualitySelect.addEventListener('change', e=>{
+      currentQuality = e.target.value;
+      loadStream(currentLang, currentQuality);
+    });
+
+    // initial load
+    loadStream(currentLang, currentQuality);
+  </script>
+</body>
+</html>
